@@ -165,21 +165,21 @@ if ('bad requests') {
 
 	$c = tcp_start($srv);
 	print $c 'GET /';
-	my $buf = join('', (0..9), 'ab');
+	my $buf = join('', (0..31), 'ab');
 	for (0..1023) { print $c $buf }
 	print $c " HTTP/1.0\r\n\r\n";
 	($status, $hdr) = slurp_hdr($c);
 	like($status, qr!\AHTTP/1\.[01] 414 \b!,
-		'414 on REQUEST_PATH > (12 * 1024)');
+		'414 on REQUEST_PATH > (32 * 1024)');
 
 	$c = tcp_start($srv);
 	print $c 'GET /hello-world?a';
-	$buf = join('', (0..9));
+	$buf = join('', (0..30));
 	for (0..1023) { print $c $buf }
 	print $c " HTTP/1.0\r\n\r\n";
 	($status, $hdr) = slurp_hdr($c);
 	like($status, qr!\AHTTP/1\.[01] 414 \b!,
-		'414 on QUERY_STRING > (10 * 1024)');
+		'414 on QUERY_STRING > (31 * 1024)');
 
 	$c = tcp_start($srv);
 	print $c 'GET /hello-world#a';
